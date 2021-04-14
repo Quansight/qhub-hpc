@@ -1,0 +1,55 @@
+---
+ #- name: install adlfs
+ #  shell: "{{ miniforge.home }}/bin/conda install --quiet --yes adlfs -c conda-forge"
+ #  args:
+ #    executable: /bin/bash
+ #  become: True
+
+ - name: install open sdk
+   apt:
+     name: openjdk-11-jre-headless
+     state: present
+   become: True
+ 
+ - name: Remove hadoop folder
+   shell: "rm -rf /opt/hadoop"
+   become: True
+
+ - name: Download and extract hadoop
+   ansible.builtin.unarchive:
+     src:  "https://mirrors.sonic.net/apache/hadoop/common/hadoop-{{ hadoop.version }}/hadoop-{{ hadoop.version }}.tar.gz"
+     dest:  /opt/
+     remote_src: yes
+     owner: root
+   become: True
+
+ - name: Move folder to hadoop-{{ hadoop.version }} to hadoop
+   shell: "mv /opt/hadoop-{{ hadoop.version }} /opt/hadoop && chmod 777 /opt/hadoop"
+   become: True
+
+ - name: Export environment variables into /etc/bash.bashrc
+   shell: "echo \"export {{item}}\" >> /etc/bash.bashrc"
+   with_items:
+      - "{{ hadoop.env_path }}"
+   become: True
+
+ - name: Adding support and credentials for hadoop
+   blockinfile:
+     dest: /opt/hadoop/etc/hadoop/core-site.xml
+     marker: "#source file additions"
+     insertafter: <configuration>
+     block: |
+       <property>
+          <name>fs.azure.account.auth.type.{{ hadoop.account_name }}.dfs.core.windows.net</name>
+          <value>SharedKey</value>
+          <description>
+          </description>
+       </property>
+       <property>
+          <name>fs.azure.account.key.{{ hadoop.account_name }}.dfs.core.windows.net</name>
+          <value>{{ hadoop.hadoopkey }}</value>
+          <description>
+              The secret password. Never share these.
+          </description>
+       </property>
+   become: True
