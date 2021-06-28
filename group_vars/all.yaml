@@ -137,6 +137,8 @@ bodo:
 
 cdsdashboards:
   enabled: true
+  spawn_as_viewer: false
+  jupyter_startpath_regex: ""
 
 backup:
   enabled: false

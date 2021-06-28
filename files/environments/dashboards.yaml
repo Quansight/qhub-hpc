@@ -16,7 +16,8 @@ dependencies:
   - voila >= 0.2.7
   - streamlit >= 0.76
   - dash >= 1.19
-  - cdsdashboards-singleuser
+  # - cdsdashboards-singleuser
   - pip:
+      - cdsdashboards[user]==0.6.0b1
       # batchspawner latest slurm fixes
       - https://github.com/jupyterhub/batchspawner/archive/129951ad11e3049567b94adb8c9725dc22225a1a.tar.gz

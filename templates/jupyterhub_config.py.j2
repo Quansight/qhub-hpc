@@ -132,6 +132,14 @@ c.CDSDashboardsConfig.spawn_default_options = False
 
 c.JupyterHub.default_url = '/hub/home'
 
+{% if cdsdashboards.spawn_as_viewer %}
+c.CDSDashboardsConfig.spawn_as_viewer = True
+{% endif %}
+
+{% if cdsdashboards.jupyter_startpath_regex %}
+c.CDSDashboardsConfig.jupyter_startpath_regex = "{{ cdsdashboards.jupyter_startpath_regex }}"
+{% endif %}
+
 {% else %}
 
 # Assign Qhub Spawner
